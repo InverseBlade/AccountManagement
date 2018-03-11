@@ -103,16 +103,7 @@ void add() {
 			printf(str[3]);
 			scanf("%f", &money);
 			if (0 <= money) {
-				status = addCard(cardno, passwd, money);
-				if (_CS_LIMIT_ == status) {
-					printf(str[8]);
-					return;
-				}
-				else if (_CS_EXISTED_ == status) {
-					printf(str[9]);
-					return;
-				}
-				else {
+				if (TRUE == addCardInfo(cardno, passwd, money)) {
 					printf(str[5]);
 					printf(str[6]);
 					printf(str[7], cardno, passwd, 0, money);
@@ -154,7 +145,7 @@ void query() {
 		return;
 	}
 	if (opt == 1) {
-		if (NULL == (card = queryCard(cardno))) {
+		if (NULL == (card = queryCardInfo(cardno, 1, NULL))) {
 			printf(str[2]);
 			return;
 		}
@@ -163,7 +154,7 @@ void query() {
 		printf(str[5], card->aName, card->nStatus, card->fBalance, card->fTotalUse, card->nUseCount, tLast);
 	}
 	else if (opt == 2) {
-		card = queryCards(cardno, &total);
+		card = queryCardInfo(cardno, 2, &total);
 		if (card == NULL || total == 0) {
 			printf(str[2]);
 			return;
@@ -179,14 +170,15 @@ void query() {
 }
 
 void exitApp() {
-	releaseCardList();
+	releaseList();
 	printf("\n");
 }
 
 void logon() {
 	char cardno[25], passwd[15];
-	Card *pCard;
-	char nowTime[_TIME_LENGTH_];
+	char tLogon[_TIME_LENGTH_];
+	LogonInfo logonInfo;
+	int status;
 
 	printf("----------上机----------\n");
 	printf("请输入上机卡号(长度为1~18)：");
@@ -198,14 +190,28 @@ void logon() {
 		printf("输入有误！\n");
 		return;
 	}
-	if (NULL == (pCard = doLogon(cardno, passwd))) {
+
+	status = doLogon(cardno, passwd, &logonInfo);
+	switch (status)
+	{
+	case FALSE:
 		printf("上机失败！\n");
-		return;
+		break;
+	case TRUE:
+		timeToString(logonInfo.tLogon, tLogon);
+		printf("----------上机信息如下----------\n");
+		printf("卡号\t余额\t上机时间\n");
+		printf("%s\t%.1f\t%s\n", logonInfo.aCardName, logonInfo.fBalance, tLogon);
+		break;
+	case _UNUSE_:
+		printf("该卡正在使用或者已注销！\n");
+		break;
+	case _NOT_ENOUGH_MONEY:
+		printf("卡余额不足！\n");
+		break;
+	default:
+		break;
 	}
-	timeToString(pCard->tLast, nowTime);
-	printf("----------上机信息如下----------\n");
-	printf("卡号\t余额\t上机时间\n");
-	printf("%s\t%.1f\t%s\n", pCard->aName, pCard->fBalance, nowTime);
 
 	printf("\n");
 }

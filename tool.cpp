@@ -8,6 +8,7 @@ void clean_stdin()
 	do {
 		c = getchar();
 	} while (c != '\n' && c != EOF);
+	fflush(stdin);
 }
 
 void timeToString(time_t t, char* pBuf) {

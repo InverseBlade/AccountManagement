@@ -11,6 +11,10 @@
 #define _CARD_PATH_ "data\\card.txt"
 #define _TIME_LENGTH_ 20
 
+#define _UNUSE_ 2
+#define _NOT_ENOUGH_MONEY 3
+#define _BILLING_PATH_ "data\\billing.ams"
+
 /*******card_service***********/
 
 #define _CS_EXISTED_ 2

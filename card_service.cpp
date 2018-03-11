@@ -24,10 +24,7 @@ int initCardList() {
 	}
 }
 
-int addCard(const char* cardno, const char* passwd, float money) {
-	time_t nowTime;
-	struct tm* tStart;
-	struct tm* tEnd;
+int addCard(Card card) {
 
 //	if (NULL != queryCard(cardno))
 //		return _CS_EXISTED_;
@@ -35,32 +32,12 @@ int addCard(const char* cardno, const char* passwd, float money) {
 //	lpCardNode p = (lpCardNode)malloc(sizeof(CardNode));
 //	Card *aCard = &p->data;
 
-	Card temp;
-	Card *aCard = &temp;
-	strcpy(aCard->aName, cardno);
-	strcpy(aCard->aPwd, passwd);
-
-	aCard->nStatus = 0;
-	aCard->fBalance = money;
-	aCard->fTotalUse = money;
-	aCard->nDel = 0;
-	aCard->nUseCount = 0;
-
-	nowTime = time(NULL);
-	aCard->tStart = nowTime;
-	aCard->tLast = nowTime;
-	aCard->tEnd = nowTime;
-
-	tStart = localtime(&aCard->tStart);
-	tEnd = localtime(&aCard->tEnd);
-	tEnd->tm_year = tStart->tm_year + 1;
-	aCard->tEnd = mktime(tEnd);
 
 //	p->next = NULL;
 //	tail->next = p;
 //	tail = p;
 
-	if (FALSE == saveCard(aCard, _CARD_PATH_)) {
+	if (FALSE == saveCard(&card, _CARD_PATH_)) {
 		return FALSE;
 	}
 
@@ -107,6 +84,10 @@ static int getCard() {
 Card* queryCard(const char* cardno) {
 	lpCardNode p;
 
+	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18)) {
+		return NULL;
+	}
+
 	if (FALSE == getCard()) {
 		return NULL;
 	}
@@ -127,6 +108,10 @@ Card* queryCards(const char* pName, int* pIndex) {
 	lpCardNode p;
 	int n = 0;
 
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18)) {
+		return NULL;
+	}
+
 	if (FALSE == getCard()) {
 		(*pIndex) = 0;
 		return NULL;
@@ -141,10 +126,14 @@ Card* queryCards(const char* pName, int* pIndex) {
 	return searchResult;
 }
 
-Card* doLogon(const char* pName, const char* pPwd) {
+Card* checkCard(const char* pName, const char* pPwd, int* pIndex) {
 	Card* pCard = NULL;
 	lpCardNode p;
 	int nIndex = 0;
+
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8)) {
+		return NULL;
+	}
 
 	if (FALSE == getCard()) {
 		return NULL;
@@ -154,21 +143,7 @@ Card* doLogon(const char* pName, const char* pPwd) {
 	while (NULL != p) {
 		if (0 == strcmp(p->data.aName, pName) && 0 == strcmp(p->data.aPwd, pPwd)) {
 			pCard = &p->data;
-
-			if (0 != pCard->nStatus) {
-				return NULL;
-			}
-			if (0 >= pCard->fBalance) {
-				return NULL;
-			}
-
-			pCard->nStatus = 1;
-			pCard->nUseCount++;
-			pCard->tLast = time(NULL);
-			
-			if (FALSE == updateCard(pCard, _CARD_PATH_, nIndex)) {
-				pCard = NULL;
-			}
+			(*pIndex) = nIndex;
 			break;
 		}
 		nIndex++;
