@@ -15,6 +15,9 @@
 #define _NOT_ENOUGH_MONEY 3
 #define _BILLING_PATH_ "data\\billing.ams"
 
+#define _UNIT_ 15
+#define _CHARGE_ 0.5
+
 /*******card_service***********/
 
 #define _CS_EXISTED_ 2

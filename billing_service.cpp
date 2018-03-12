@@ -4,6 +4,8 @@
 #include "billing_file.h"
 #include "global.h"
 
+
+
 int addBilling(const char* pName, Billing* pBilling) {
 	strcpy(pBilling->aCardName, pName);
 
@@ -12,4 +14,8 @@ int addBilling(const char* pName, Billing* pBilling) {
 	}
 
 	return TRUE;
+}
+
+void releaseBillingList() {
+
 }

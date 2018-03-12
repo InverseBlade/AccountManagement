@@ -217,7 +217,18 @@ void logon() {
 }
 
 void settle() {
-	printf("下机成功!\n");
+	int nIndex = getBillingCount(_BILLING_PATH_);
+	Billing *pBilling = (Billing*)calloc(nIndex, sizeof(Billing));
+	char tStart[20], tEnd[20];
+
+	if (TRUE == readBilling(pBilling, _BILLING_PATH_)) {
+		for (int i = 0; i < nIndex; i++) {
+			timeToString(pBilling[i].tStart, tStart);
+			timeToString(pBilling[i].tEnd, tEnd);
+			printf("%s %s %s %.1f %d %d\n", pBilling[i].aCardName, tStart, tEnd,
+				pBilling[i].fAmount, pBilling[i].nStatus, pBilling[i].nDel);
+		}
+	}
 }
 
 void annul() {

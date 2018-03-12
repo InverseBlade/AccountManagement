@@ -32,6 +32,12 @@ typedef struct Billing
 	int nDel;              // É¾³ý±êÊ¶£¬0-Î´É¾³ý,1-É¾³ý
 }Billing;
 
+typedef struct _BillingNode
+{
+	Billing data;
+	struct _BillingNode *next;
+}BillingNode, *lpBillingNode;
+
 typedef struct LogonInfo
 {
 	char aCardName[18];    // ÉÏ»ú¿¨ºÅ

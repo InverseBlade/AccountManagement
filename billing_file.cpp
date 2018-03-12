@@ -16,3 +16,37 @@ int saveBilling(const Billing* pBilling, const char* pPath) {
 	fclose(fp);
 	return TRUE;
 }
+
+int readBilling(Billing* pBilling, const char* pPath) {
+	FILE *fp = NULL;
+	Billing bill;
+	int nIndex = 0;
+
+	if (NULL == (fp = fopen(pPath, "rb"))) {
+		return FALSE;
+	}
+	while (!feof(fp)) {
+		if (0 < fread(&bill, sizeof(Billing), 1, fp)) {
+			pBilling[nIndex++] = bill;
+		}
+	}
+	fclose(fp);
+	return TRUE;
+}
+
+int getBillingCount(const char* pPath) {
+	FILE *fp = NULL;
+	Billing bill;
+	int nIndex = 0;
+
+	if (NULL == (fp = fopen(pPath, "rb"))) {
+		return FALSE;
+	}
+
+	while (!feof(fp)) {
+		if (0 < fread(&bill, sizeof(Billing), 1, fp)) {
+			nIndex++;
+		}
+	}
+	return nIndex;
+}

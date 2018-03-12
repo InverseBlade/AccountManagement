@@ -3,6 +3,8 @@
 
 #include "model.h"
 
+#include "billing_file.h"
+
 /**
  *处理上机
  *return: TRUE:上机成功 FALSE:上机失败 _UNUSE_:卡不能使用 _NOT_ENOUGH_MONEY:余额不足
@@ -29,6 +31,11 @@ Card* queryCardInfo(const char* pName, int mode, int* pIndex);
  *return : void
 */
 void releaseList();
+
+int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo);
+
+double getAmount(time_t tStart);
+
 
 
 #endif // !__SERVICE__H__

@@ -113,4 +113,5 @@ Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
 
 void releaseList() {
 	releaseCardList();
+	releaseBillingList();
 }
