@@ -32,7 +32,7 @@ typedef struct Billing
 	int nDel;              // 删除标识，0-未删除,1-删除
 }Billing;
 
-typedef struct _BillingNode
+typedef struct _BillingNode // 计费信息链表节点结构类型
 {
 	Billing data;
 	struct _BillingNode *next;

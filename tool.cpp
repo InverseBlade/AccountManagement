@@ -15,6 +15,12 @@ void timeToString(time_t t, char* pBuf) {
 	struct tm *temp;
 
 	temp = localtime(&t);
+
+	if (NULL == temp) {
+		strcpy(pBuf, "error");
+		return;
+	}
+
 	strftime(pBuf, 25, "%Y-%m-%d %H:%M", temp);
 }
 

@@ -2,8 +2,9 @@
 
 #include "service.h"
 #include "card_service.h"
-#include "billing_service.h"
 #include "card_file.h"
+#include "billing_service.h"
+#include "billing_file.h"
 #include "global.h"
 
 int doLogon(const char* pName, const char* pPwd, LogonInfo* pInfo) {
@@ -19,7 +20,7 @@ int doLogon(const char* pName, const char* pPwd, LogonInfo* pInfo) {
 		return FALSE;
 	}
 
-	if (1 == pCard->nStatus || 2 == pCard->nStatus) {
+	if (0 != pCard->nStatus) {
 		return _UNUSE_;
 	}
 	if (0 >= pCard->fBalance) {
@@ -88,6 +89,49 @@ int addCardInfo(const char* cardno, const char* passwd, float money) {
 	return TRUE;
 }
 
+int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo) {
+	Card *pCard = NULL;
+	Billing *pBilling = NULL;
+	int cardIndex, billingIndex;
+	float fBalance;
+	double dbAmount;
+
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8)) {
+		return FALSE;
+	}
+	if (NULL == (pCard = checkCard(pName, pPwd, &cardIndex)))
+		return FALSE;
+	if (1 != pCard->nStatus)
+		return FALSE;
+	if (NULL == (pBilling = queryBilling(pName, &billingIndex)))
+		return FALSE;
+
+	dbAmount = getAmount(pBilling->tStart);
+	if (0 > (fBalance = (float)(pCard->fBalance - dbAmount)))
+		return _NOT_ENOUGH_MONEY;
+	
+	pCard->fBalance = fBalance;
+	pCard->nStatus = 0;
+	pCard->tLast = time(NULL);
+	if (FALSE == updateCard(pCard, _CARD_PATH_, cardIndex))
+		return FALSE;
+
+	pBilling->fAmount = dbAmount;
+	pBilling->nStatus = 1;
+	pBilling->tEnd = time(NULL);
+	if (FALSE == updateBilling(pBilling, _BILLING_PATH_, billingIndex)) {
+		return FALSE;
+	}
+
+	strcpy(pInfo->aCardName, pName);
+	pInfo->fAmount = dbAmount;
+	pInfo->fBalance = fBalance;
+	pInfo->tEnd = time(NULL);
+	pInfo->tStart = pBilling->tStart;
+
+	return TRUE;
+}
+
 Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
 	Card *pCard = NULL;
 	int total = 0;
@@ -109,6 +153,19 @@ Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
 	}
 	
 	return NULL;
+}
+
+double getAmount(time_t tStart) {
+	time_t tEnd, nSec, nMinutes;
+	int nCount;
+
+	tEnd = time(NULL);
+	nSec = tEnd - tStart;
+	nMinutes = nSec / 60;
+
+	nMinutes % _UNIT_ ? (nCount = 1 + nMinutes / _UNIT_) : (nCount = nMinutes / _UNIT_);
+	
+	return nCount * _CHARGE_;
 }
 
 void releaseList() {

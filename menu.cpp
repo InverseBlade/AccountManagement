@@ -5,6 +5,7 @@
 #include "global.h"
 #include "tool.h"
 #include "model.h"
+#include "billing_file.h"
 
 void outputMenu() {
 	char str[] = {
@@ -217,17 +218,40 @@ void logon() {
 }
 
 void settle() {
-	int nIndex = getBillingCount(_BILLING_PATH_);
-	Billing *pBilling = (Billing*)calloc(nIndex, sizeof(Billing));
-	char tStart[20], tEnd[20];
+	int nResult;
+	char cardno[25], passwd[15];
+	char tStart[_TIME_LENGTH_], tEnd[_TIME_LENGTH_];
+	SettleInfo settleInfo;
 
-	if (TRUE == readBilling(pBilling, _BILLING_PATH_)) {
-		for (int i = 0; i < nIndex; i++) {
-			timeToString(pBilling[i].tStart, tStart);
-			timeToString(pBilling[i].tEnd, tEnd);
-			printf("%s %s %s %.1f %d %d\n", pBilling[i].aCardName, tStart, tEnd,
-				pBilling[i].fAmount, pBilling[i].nStatus, pBilling[i].nDel);
-		}
+	printf("----------下机----------\n");
+	printf("请输入下机卡号(长度为1~18)：");
+	scanf("%20s", cardno);
+	printf("请输入下机密码(长度为1~8)：");
+	scanf("%10s", passwd);
+
+	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
+		printf("输入有误！\n");
+		return;
+	}
+	nResult = doSettle(cardno, passwd, &settleInfo);
+
+	switch (nResult)
+	{
+	case _NOT_ENOUGH_MONEY:
+		printf("下机失败,卡余额不足！\n");
+		break;
+	case FALSE:
+		printf("下机失败！\n");
+		break;
+	case TRUE:
+		timeToString(settleInfo.tStart, tStart);
+		timeToString(settleInfo.tEnd, tEnd);
+		printf("----------下机信息如下----------\n");
+		printf("卡号\t消费\t余额\t上机时间\t\t下机时间\n");
+		printf("%s\t%.1f\t%.1f\t%s\t%s\n", settleInfo.aCardName, settleInfo.fAmount, settleInfo.fBalance, tStart, tEnd);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -245,4 +269,20 @@ void refundMoney() {
 
 void statistic() {
 	printf("查询统计信息如下:\n");
+	printf("\n");
+	{
+		int nIndex = getBillingCount(_BILLING_PATH_);
+		Billing *pBilling = (Billing*)calloc(nIndex, sizeof(Billing));
+		char tStart[20], tEnd[20];
+
+		if (TRUE == readBilling(pBilling, _BILLING_PATH_)) {
+			for (int i = 0; i < nIndex; i++) {
+				timeToString(pBilling[i].tStart, tStart);
+				timeToString(pBilling[i].tEnd, tEnd);
+				printf("%s %s %s %.1f %d %d\n", pBilling[i].aCardName, tStart, tEnd,
+					pBilling[i].fAmount, pBilling[i].nStatus, pBilling[i].nDel);
+			}
+		}
+		free(pBilling);
+	}
 }
