@@ -63,6 +63,11 @@ typedef struct Money
 	int nDel; // É¾³ý±êÊ¶£¬0-Î´É¾³ý,1-É¾³ý
 }Money;
 
+typedef struct _MoneyNode {
+	Money data;
+	struct _MoneyNode *next;
+}MoneyNode, *lpMoneyNode;
+
 typedef struct MoneyInfo
 {
 	char aCardName[18];  // ¿¨ºÅ

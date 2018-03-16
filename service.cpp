@@ -1,39 +1,34 @@
 #include "stdafx.h"
 
 #include "service.h"
+#include "global.h"
 #include "card_service.h"
 #include "card_file.h"
 #include "billing_service.h"
 #include "billing_file.h"
-#include "global.h"
+#include "money_service.h"
+#include "money_file.h"
 
 int doLogon(const char* pName, const char* pPwd, LogonInfo* pInfo) {
 	Card* pCard = NULL;
 	Billing bill;
 	int nIndex = 0;
 
-	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8)) {
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8))
 		return FALSE;
-	}
-
-	if (NULL == (pCard = checkCard(pName, pPwd, &nIndex))) {
+	if (NULL == (pCard = checkCard(pName, pPwd, &nIndex)))
 		return FALSE;
-	}
-
-	if (0 != pCard->nStatus) {
+	if (0 != pCard->nStatus) 
 		return _UNUSE_;
-	}
-	if (0 >= pCard->fBalance) {
+	if (0 >= pCard->fBalance) 
 		return _NOT_ENOUGH_MONEY;
-	}
 
 	pCard->nStatus = 1;
 	pCard->nUseCount++;
 	pCard->tLast = time(NULL);
 
-	if (FALSE == updateCard(pCard, _CARD_PATH_, nIndex)) {
+	if (FALSE == updateCard(pCard, _CARD_PATH_, nIndex))
 		return FALSE;
-	}
 
 	strcpy(bill.aCardName, pCard->aName);
 	bill.tStart = time(NULL);
@@ -41,9 +36,9 @@ int doLogon(const char* pName, const char* pPwd, LogonInfo* pInfo) {
 	bill.fAmount = 0.f;
 	bill.nStatus = 0;
 	bill.nDel = 0;
-	if (FALSE == addBilling(pCard->aName, &bill)) {
+
+	if (FALSE == addBilling(pCard->aName, &bill))
 		return FALSE;
-	}
 
 	strcpy(pInfo->aCardName, pCard->aName);
 	pInfo->tLogon = bill.tStart;
@@ -59,9 +54,8 @@ int addCardInfo(const char* cardno, const char* passwd, float money) {
 	Card card;
 	Card *aCard = &card;
 
-	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8 && 0 <= money)) {
+	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8 && 0 <= money))
 		return FALSE;
-	}
 
 	strcpy(aCard->aName, cardno);
 	strcpy(aCard->aPwd, passwd);
@@ -82,9 +76,8 @@ int addCardInfo(const char* cardno, const char* passwd, float money) {
 	tEnd->tm_year = tStart->tm_year + 1;
 	aCard->tEnd = mktime(tEnd);
 
-	if (FALSE == addCard(card)) {
+	if (FALSE == addCard(card))
 		return FALSE;
-	}
 
 	return TRUE;
 }
@@ -96,9 +89,8 @@ int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo) {
 	float fBalance;
 	double dbAmount;
 
-	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8)) {
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8))
 		return FALSE;
-	}
 	if (NULL == (pCard = checkCard(pName, pPwd, &cardIndex)))
 		return FALSE;
 	if (1 != pCard->nStatus)
@@ -119,9 +111,8 @@ int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo) {
 	pBilling->fAmount = dbAmount;
 	pBilling->nStatus = 1;
 	pBilling->tEnd = time(NULL);
-	if (FALSE == updateBilling(pBilling, _BILLING_PATH_, billingIndex)) {
+	if (FALSE == updateBilling(pBilling, _BILLING_PATH_, billingIndex))
 		return FALSE;
-	}
 
 	strcpy(pInfo->aCardName, pName);
 	pInfo->fAmount = dbAmount;
@@ -137,9 +128,8 @@ Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
 	int total = 0;
 
 	if (mode == 1 || pIndex == NULL) {
-		if (NULL == (pCard = queryCard(pName))) {
+		if (NULL == (pCard = queryCard(pName)))
 			return NULL;
-		}
 		return pCard;
 	}
 	else if (mode == 2 && pIndex != NULL) {
@@ -171,4 +161,89 @@ double getAmount(time_t tStart) {
 void releaseList() {
 	releaseCardList();
 	releaseBillingList();
+	releaseMoneyList();
+}
+
+int doAddMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo) {
+	Money money;
+	Card* card = NULL;
+	int nIndex = 0;
+	time_t nowTime;
+	float fMoney = pMoneyInfo->fMoney;
+
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8)) 
+		return FALSE;
+	if (0 >= fMoney) 
+		return FALSE;
+	if (NULL == (card = checkCard(pName, pPwd, &nIndex))) 
+		return FALSE;
+	if (2 == card->nStatus || 3 == card->nStatus) 
+		return FALSE;
+
+	nowTime = time(NULL);
+
+	card->nUseCount++;
+	card->tLast = nowTime;
+	card->fTotalUse += fMoney;
+	card->fBalance += fMoney;
+	
+	if (FALSE == updateCard(card, _CARD_PATH_, nIndex))
+		return FALSE;
+
+	strcpy(money.aCardName, pName);
+	money.fMoney = fMoney;
+	money.nDel = 0;
+	money.nStatus = 0;
+	money.tTime = nowTime;
+	
+	if (FALSE == addMoney(pName, &money))
+		return FALSE;
+
+	strcpy(pMoneyInfo->aCardName, pName);
+	pMoneyInfo->fBalance = card->fBalance;
+	pMoneyInfo->fMoney = fMoney;
+
+	return TRUE;
+}
+
+int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo) {
+	Money money;
+	Card* card = NULL;
+	int nIndex = 0;
+	time_t nowTime;
+	float fMoney = 0;
+
+	if (!(1 <= strlen(pName) && strlen(pName) <= 18 && 1 <= strlen(pPwd) && strlen(pPwd) <= 8))
+		return FALSE;
+	if (NULL == (card = checkCard(pName, pPwd, &nIndex)))
+		return FALSE;
+	if (0 != card->nStatus)
+		return FALSE;
+	if (0 > card->fBalance)
+		return FALSE;
+
+	fMoney = card->fBalance;
+	nowTime = time(NULL);
+
+	card->nUseCount++;
+	card->tLast = nowTime;
+	card->fBalance = 0;
+
+	if (FALSE == updateCard(card, _CARD_PATH_, nIndex))
+		return FALSE;
+
+	strcpy(money.aCardName, pName);
+	money.fMoney = fMoney;
+	money.nDel = 0;
+	money.nStatus = 1;
+	money.tTime = nowTime;
+
+	if (FALSE == addMoney(pName, &money))
+		return FALSE;
+
+	strcpy(pMoneyInfo->aCardName, pName);
+	pMoneyInfo->fBalance = card->fBalance;
+	pMoneyInfo->fMoney = fMoney;
+
+	return TRUE;
 }

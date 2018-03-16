@@ -43,7 +43,19 @@ int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo);
  */
 double getAmount(time_t tStart);
 
+/**
+ *充值
+ *param: 
+ *return: TRUE : 充值成功  FALSE : 充值失败
+ */
+int doAddMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
 
+/**
+ *退费
+ *param: 
+ *return: TRUE : 退费成功  FALSE : 退费失败
+ */
+int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
 
 #endif // !__SERVICE__H__
 

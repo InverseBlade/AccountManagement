@@ -8,7 +8,8 @@
 #define _EXIT_ 1
 #define _RUN_  0
 
-#define _CARD_PATH_ "data\\card.txt"
+//#define _CARD_PATH_ "data\\card.txt"
+#define _CARD_PATH_ "data\\card.ams"
 #define _TIME_LENGTH_ 20
 
 #define _UNUSE_ 2
@@ -18,10 +19,7 @@
 #define _UNIT_ 15
 #define _CHARGE_ 0.5
 
-/*******card_service***********/
-
-#define _CS_EXISTED_ 2
-#define _CS_LIMIT_   3
+#define _MONEY_PATH_ "data\\money.ams"
 
 #endif // !__GLOBAL__H__
 

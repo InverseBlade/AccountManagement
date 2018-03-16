@@ -6,7 +6,7 @@
 
 static lpBillingNode billingList = NULL;
 static lpBillingNode tail = NULL;
-static BillingNode searchResult[20];
+static Billing searchResult[20];
 
 int addBilling(const char* pName, Billing* pBilling) {
 	strcpy(pBilling->aCardName, pName);
