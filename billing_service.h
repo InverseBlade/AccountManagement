@@ -13,5 +13,7 @@ int getBilling();
 
 Billing* queryBilling(const char* pName, int* pIndex);
 
+Billing* queryBillings(const char* pName, int* pIndex);
+
 #endif // !__BILLING_SERVICE__H__
 

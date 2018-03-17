@@ -182,8 +182,8 @@ int doAddMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo) {
 
 	nowTime = time(NULL);
 
-	card->nUseCount++;
-	card->tLast = nowTime;
+	//card->nUseCount++;
+	//card->tLast = nowTime;
 	card->fTotalUse += fMoney;
 	card->fBalance += fMoney;
 	
@@ -217,17 +217,18 @@ int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo) {
 		return FALSE;
 	if (NULL == (card = checkCard(pName, pPwd, &nIndex)))
 		return FALSE;
-	if (0 != card->nStatus)
-		return FALSE;
-	if (0 > card->fBalance)
-		return FALSE;
+	if (1 == card->nStatus)
+		return _UNUSE_;
+	if (0 >= card->fBalance)
+		return _NOT_ENOUGH_MONEY;
 
 	fMoney = card->fBalance;
 	nowTime = time(NULL);
 
-	card->nUseCount++;
-	card->tLast = nowTime;
+	//card->nUseCount++;
+	//card->tLast = nowTime;
 	card->fBalance = 0;
+	card->fTotalUse -= fMoney;
 
 	if (FALSE == updateCard(card, _CARD_PATH_, nIndex))
 		return FALSE;
@@ -246,4 +247,50 @@ int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo) {
 	pMoneyInfo->fMoney = fMoney;
 
 	return TRUE;
+}
+
+int annulCard(Card* pCard) {
+	Card *card = NULL;
+	int nIndex = 0;
+	float fMoney = 0;
+
+	if (NULL == (card = checkCard(pCard->aName, pCard->aPwd, &nIndex)))
+		return FALSE;
+	if (0 != card->nStatus)
+		return FALSE;
+
+	fMoney = card->fBalance;
+	card->fBalance = 0;
+	card->nStatus = 2;
+	card->tLast = time(NULL);
+	card->fTotalUse -= fMoney;
+
+	if (FALSE == updateCard(card, _CARD_PATH_, nIndex))
+		return FALSE;
+
+	strcpy(pCard->aName, card->aName);
+	pCard->fBalance = fMoney;
+
+	return TRUE;
+}
+
+Billing* queryBillingInfo(Card *pCard, int* pIndex) {
+	int nIndex;
+	Billing *result;
+
+	if (NULL == (result = queryBillings(pCard->aName, &nIndex)))
+		return NULL;
+	*pIndex = nIndex;
+	return result;
+}
+
+Money* queryMoneyInfo(Card *pCard, int *pIndex) {
+	int nIndex;
+	Money *result;
+
+	if (NULL == (result = queryMoneys(pCard->aName, &nIndex)))
+		return NULL;
+
+	*pIndex = nIndex;
+	return result;
 }

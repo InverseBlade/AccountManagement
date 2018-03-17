@@ -17,7 +17,7 @@
 #define _BILLING_PATH_ "data\\billing.ams"
 
 #define _UNIT_ 15
-#define _CHARGE_ 0.5
+#define _CHARGE_ 0.75
 
 #define _MONEY_PATH_ "data\\money.ams"
 

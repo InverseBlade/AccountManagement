@@ -6,7 +6,9 @@
 
 static lpBillingNode billingList = NULL;
 static lpBillingNode tail = NULL;
-static Billing searchResult[20];
+static Billing *billingSR = NULL;
+
+static int total_count = 0;
 
 int addBilling(const char* pName, Billing* pBilling) {
 	strcpy(pBilling->aCardName, pName);
@@ -18,6 +20,35 @@ int addBilling(const char* pName, Billing* pBilling) {
 	return TRUE;
 }
 
+Billing* queryBillings(const char* pName, int* pIndex) {
+	lpBillingNode p;
+	int nIndex = 0;
+	int sum = 0;
+
+	if (NULL != billingSR)
+		free(billingSR);
+	if (FALSE == getBilling())
+		return NULL;
+
+	p = billingList->next;
+	while (NULL != p) {
+		if (0 == strcmp(pName, p->data.aCardName))
+			sum++;
+		p = p->next;
+	}
+
+	if (NULL == (billingSR = (Billing*)calloc(sum, sizeof(Billing))))
+		return NULL;
+	p = billingList->next;
+	while (NULL != p) {
+		if (0 == strcmp(pName, p->data.aCardName)) {
+			billingSR[nIndex++] = p->data;
+		}
+		p = p->next;
+	}
+	*pIndex = sum;
+	return billingSR;
+}
 
 Billing* queryBilling(const char* pName, int* pIndex) {
 	lpBillingNode p = NULL;
@@ -84,6 +115,7 @@ int getBilling() {
 		tail->next = p;
 		tail = p;
 	}
+	total_count = nCount;
 
 	return TRUE;
 }

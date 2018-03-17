@@ -6,7 +6,7 @@
 
 static lpMoneyNode moneyList = NULL;
 static lpMoneyNode tail = NULL;
-static Money searchResult[20];
+static Money *moneyRS = NULL;
 
 Money* queryMoney(const char* pName, int* pIndex) {
 	lpMoneyNode p = NULL;
@@ -26,6 +26,36 @@ Money* queryMoney(const char* pName, int* pIndex) {
 	}
 
 	return NULL;
+}
+
+Money* queryMoneys(const char* pName, int* pIndex) {
+	lpMoneyNode p;
+	int nIndex = 0;
+	int sum = 0;
+
+	if (NULL != moneyRS)
+		free(moneyRS);
+	if (FALSE == getMoney())
+		return NULL;
+
+	p = moneyList->next;
+	while (NULL != p) {
+		if (0 == strcmp(pName, p->data.aCardName))
+			sum++;
+		p = p->next;
+	}
+	if (NULL == (moneyRS = (Money*)calloc(sum, sizeof(Money))))
+		return NULL;
+
+	p = moneyList->next;
+	while (NULL != p) {
+		if (0 == strcmp(pName, p->data.aCardName)) {
+			moneyRS[nIndex++] = p->data;
+		}
+		p = p->next;
+	}
+	*pIndex = sum;
+	return moneyRS;
 }
 
 void releaseMoneyList() {

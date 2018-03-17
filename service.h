@@ -57,5 +57,21 @@ int doAddMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
  */
 int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
 
+/**
+ *注销卡
+ *param:  Card* pCard: 要注销的卡的指针
+ *return: TRUE:成功   FALSE:失败
+ */
+int annulCard(Card* pCard);
+
+/**
+ *查询消费信息
+ *param:  Card* pCard, int* pIndex
+ *return  Billing* : 查询结果首地址
+ */
+Billing* queryBillingInfo(Card *pCard, int* pIndex);
+
+Money* queryMoneyInfo(Card *pCard, int *pIndex);
+
 #endif // !__SERVICE__H__
 

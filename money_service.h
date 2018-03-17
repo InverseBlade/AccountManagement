@@ -7,6 +7,8 @@ int addMoney(const char* pName, Money* pMoney);
 
 Money* queryMoney(const char* pName, int* pIndex);
 
+Money* queryMoneys(const char* pName, int* pIndex);
+
 void releaseMoneyList();
 
 int initMoneyList();

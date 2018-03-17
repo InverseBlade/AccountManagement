@@ -9,7 +9,7 @@
 static lpCardNode cardlist = NULL;
 static lpCardNode head = NULL;
 static lpCardNode tail = NULL;
-static Card searchResult[20];
+static Card *cardRS = NULL;
 
 int initCardList() {
 	head = (lpCardNode)malloc(sizeof(CardNode));
@@ -71,12 +71,19 @@ static int getCard() {
 	initCardList();
 	p = cardlist;
 	for (index = 0; index < nCount; index++) {
+		/**********将过期卡标注为失效*************/
+		if (3 != pCard[index].nStatus && time(NULL) >= pCard[index].tEnd) {
+			pCard[index].nStatus = 3;
+			updateCard(&pCard[index], _CARD_PATH_, index);
+		}
+
 		q = (lpCardNode)malloc(sizeof(CardNode));
 		q->next = NULL;
 		q->data = pCard[index];
 		p->next = q;
 		p = q;
 	}
+	tail = p;
 	free(pCard);
 	return TRUE;
 }
@@ -106,24 +113,30 @@ Card* queryCard(const char* cardno) {
 
 Card* queryCards(const char* pName, int* pIndex) {
 	lpCardNode p;
-	int n = 0;
+	int n = 0, sum = 0;
 
 	if (!(1 <= strlen(pName) && strlen(pName) <= 18)) {
 		return NULL;
 	}
-
 	if (FALSE == getCard()) {
 		(*pIndex) = 0;
 		return NULL;
 	}
+	for (p = cardlist->next; p != NULL; p = p->next) {
+		if (NULL != strstr(p->data.aName, pName) || 0 == strcmp(pName, "*"))
+			sum++;
+	}
+	if (NULL != cardRS)
+		free(cardRS);
+	cardRS = (Card*)calloc(sum, sizeof(Card));
 
 	for (p = cardlist->next; p != NULL; p = p->next) {
 		if (NULL != strstr(p->data.aName, pName) || 0 == strcmp(pName, "*")) {
-			searchResult[n++] = p->data;
+			cardRS[n++] = p->data;
 		}
 	}
-	(*pIndex) = n;
-	return searchResult;
+	(*pIndex) = sum;
+	return cardRS;
 }
 
 Card* checkCard(const char* pName, const char* pPwd, int* pIndex) {

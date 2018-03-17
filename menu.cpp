@@ -168,8 +168,8 @@ void logon() {
 		printf("输入有误！\n");
 		return;
 	}
-
 	status = doLogon(cardno, passwd, &logonInfo);
+
 	switch (status)
 	{
 	case FALSE:
@@ -233,7 +233,38 @@ void settle() {
 }
 
 void annul() {
-	printf("卡注销成功!\n");
+	Card card;
+	char cardno[25], passwd[15];
+	int nResult = 0;
+
+	printf("----------注销卡----------\n");
+	printf("请输入注销卡号(长度为1~18)：");
+	scanf("%20s", cardno);
+	printf("请输入密码(长度为1~8)：");
+	scanf("%10s", passwd);
+
+	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
+		printf("输入有误！\n");
+		return;
+	}
+	strcpy(card.aName, cardno);
+	strcpy(card.aPwd, passwd);
+
+	nResult = annulCard(&card);
+	printf("----------注销信息如下----------\n");
+	switch (nResult)
+	{
+	case TRUE:
+		printf("卡号\t退款金额\n");
+		printf("%s\t%.1f\n", card.aName, card.fBalance);
+		break;
+	case FALSE:
+		printf("注销卡失败！\n");
+		break;
+	default:
+		break;
+	}
+	return;
 }
 
 void addMoney() {
@@ -269,6 +300,7 @@ void refundMoney() {
 	MoneyInfo moneyInfo;
 	char cardno[25], passwd[15];
 	float fMoney = 0;
+	int nResult = 0;
 
 	printf("----------退费----------\n");
 	printf("请输入退费卡号(长度为1~18)：");
@@ -280,32 +312,72 @@ void refundMoney() {
 		printf("输入有误！\n");
 		return;
 	}
+	nResult = doRefundMoney(cardno, passwd, &moneyInfo);
 
-	if (TRUE == doRefundMoney(cardno, passwd, &moneyInfo)) {
+	switch (nResult) {
+	case TRUE:
 		printf("----------退费信息如下----------\n");
 		printf("卡号\t退费金额\t余额\n");
 		printf("%s\t%.1f\t\t%.1f\n", moneyInfo.aCardName, moneyInfo.fMoney, moneyInfo.fBalance);
-		return;
+		break;
+	case _NOT_ENOUGH_MONEY:
+		printf("卡余额不足！\n");
+		break;
+	case _UNUSE_:
+		printf("退费失败！\n");
+		break;
+	default:
+		printf("退费失败！\n");
+		break;
 	}
-
-	printf("退费失败！\n");
+	return;
 }
 
 void statistic() {
-	printf("查询统计信息如下:\n");
-	//printf("\n");
-	//{
-	//	int nIndex = getMoneyCount(_MONEY_PATH_);
-	//	Money *pMoney = (Money*)calloc(nIndex, sizeof(Money));
-	//	char tStart[20], tEnd[20];
+	char cardno[25], passwd[15];
+	char tStart[_TIME_LENGTH_], tEnd[_TIME_LENGTH_];
+	int opt, index, total;
+	Billing *rs = NULL;
+	Money *moneyRS = NULL;
+	Card card;
 
-	//	if (TRUE == readMoney(pMoney, _MONEY_PATH_)) {
-	//		for (int i = 0; i < nIndex; i++) {
-	//			timeToString(pMoney[i].tTime, tEnd);
-	//			printf("%s\t%s\t%.1f\t%d\t%d\n", pMoney[i].aCardName, tEnd,
-	//				pMoney[i].fMoney, pMoney[i].nStatus, pMoney[i].nDel);
-	//		}
-	//	}
-	//	free(pMoney);
-	//}
+	printf("----------统计查询----------\n");
+	printf("1.查询消费记录\t2.查询充值记录\n");
+	printf("请输入选项：");
+	scanf("%d", &opt);
+	printf("请输入查询卡号(长度为1~18)：");
+	scanf("%20s", cardno);
+	//printf("请输入密码(长度为1~8)：");
+	//scanf("%10s", passwd);
+	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18)) {
+		printf("输入有误！\n");
+		return;
+	}
+	strcpy(card.aName, cardno);
+
+	if (1 == opt) {
+		if (NULL == (rs = queryBillingInfo(&card, &total))) {
+			printf("查询失败！\n");
+			return;
+		}
+		printf("卡号\t消费金额\t状态\t上机时间\t\t下机时间\n");
+		for (index = 0; index < total; index++, rs++) {
+			timeToString(rs->tStart, tStart);
+			timeToString(rs->tEnd, tEnd);
+			printf("%s\t%.1f\t\t%s\t%s\t%s\n", 
+				rs->aCardName, rs->fAmount, rs->nStatus? "已结算":"未结算", tStart, tEnd);
+		}
+	}
+	else if (2 == opt) {
+		if (NULL == (moneyRS = queryMoneyInfo(&card, &total))) {
+			printf("查询失败！\n");
+			return;
+		}
+		printf("卡号\t\t时间\t\t状态\t金额\t删除标识\n\n");
+		for (index = 0; index < total; index++, moneyRS++) {
+			timeToString(moneyRS->tTime, tStart);
+			printf("%s\t%s\t%s\t%.1f\t%d\n",
+				moneyRS->aCardName, tStart, moneyRS->nStatus ? "退费" : "充值", moneyRS->fMoney, moneyRS->nDel);
+		}
+	}
 }
