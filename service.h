@@ -1,76 +1,81 @@
-#ifndef __SERVICE__H__
+ï»¿#ifndef __SERVICE__H__
 #define __SERVICE__H__
 
 #include "model.h"
 
 /**
- *´¦ÀíÉÏ»ú
- *return: TRUE:ÉÏ»ú³É¹¦ FALSE:ÉÏ»úÊ§°Ü _UNUSE_:¿¨²»ÄÜÊ¹ÓÃ _NOT_ENOUGH_MONEY:Óà¶î²»×ã
+ *å¤„ç†ä¸Šæœº
+ *return: TRUE:ä¸ŠæœºæˆåŠŸ FALSE:ä¸Šæœºå¤±è´¥ _UNUSE_:å¡ä¸èƒ½ä½¿ç”¨ _NOT_ENOUGH_MONEY:ä½™é¢ä¸è¶³
  */
 int doLogon(const char* pName, const char* pPwd, LogonInfo* pInfo);
 
 /**
- *Ìí¼Ó¿¨
- *return: TRUE:³É¹¦  FALSE:Ê§°Ü
+ *æ·»åŠ å¡
+ *return: TRUE:æˆåŠŸ  FALSE:å¤±è´¥
  */
 int addCardInfo(const char* cardno, const char* passwd, float money);
 
 /**
  *queryCardInfo
- *¶àÄ£Ê½²éÑ¯
- *param: mode: 1:¾«×¼²éÑ¯ 2.Ä£ºı²éÑ¯   pIndex: NULL:¾«×¼²éÑ¯
+ *å¤šæ¨¡å¼æŸ¥è¯¢
+ *param: mode: 1:ç²¾å‡†æŸ¥è¯¢ 2.æ¨¡ç³ŠæŸ¥è¯¢   pIndex: NULL:ç²¾å‡†æŸ¥è¯¢
  *return: Card* 
  */
 Card* queryCardInfo(const char* pName, int mode, int* pIndex);
 
 /**
- *ÊÍ·Å¿¨ĞÅÏ¢Á´±í
+ *é‡Šæ”¾å¡ä¿¡æ¯é“¾è¡¨
  *param : none
  *return : void
  */
 void releaseList();
 
 /**
- *´¦ÀíÏÂ»ú
- *return: TRUE:³É¹¦  FALSE:Ê§°Ü
+ *å¤„ç†ä¸‹æœº
+ *return: TRUE:æˆåŠŸ  FALSE:å¤±è´¥
  */
 int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo);
 
 /**
- *¼ÆËã·ÑÓÃ
- *param: time_t tStart ÉÏ»úÊ±¼ä
- *return: double ±¾´ÎÏû·Ñ½ğ¶î
+ *è®¡ç®—è´¹ç”¨
+ *param: time_t tStart ä¸Šæœºæ—¶é—´
+ *return: double æœ¬æ¬¡æ¶ˆè´¹é‡‘é¢
  */
 double getAmount(time_t tStart);
 
 /**
- *³äÖµ
+ *å……å€¼
  *param: 
- *return: TRUE : ³äÖµ³É¹¦  FALSE : ³äÖµÊ§°Ü
+ *return: TRUE : å……å€¼æˆåŠŸ  FALSE : å……å€¼å¤±è´¥
  */
 int doAddMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
 
 /**
- *ÍË·Ñ
+ *é€€è´¹
  *param: 
- *return: TRUE : ÍË·Ñ³É¹¦  FALSE : ÍË·ÑÊ§°Ü
+ *return: TRUE : é€€è´¹æˆåŠŸ  FALSE : é€€è´¹å¤±è´¥
  */
 int doRefundMoney(const char* pName, const char* pPwd, MoneyInfo *pMoneyInfo);
 
 /**
- *×¢Ïú¿¨
- *param:  Card* pCard: Òª×¢ÏúµÄ¿¨µÄÖ¸Õë
- *return: TRUE:³É¹¦   FALSE:Ê§°Ü
+ *æ³¨é”€å¡
+ *param:  Card* pCard: è¦æ³¨é”€çš„å¡çš„æŒ‡é’ˆ
+ *return: TRUE:æˆåŠŸ   FALSE:å¤±è´¥
  */
 int annulCard(Card* pCard);
 
 /**
- *²éÑ¯Ïû·ÑĞÅÏ¢
+ *æŸ¥è¯¢æ¶ˆè´¹ä¿¡æ¯
  *param:  Card* pCard, int* pIndex
- *return  Billing* : ²éÑ¯½á¹ûÊ×µØÖ·
+ *return  Billing* : æŸ¥è¯¢ç»“æœé¦–åœ°å€
  */
 Billing* queryBillingInfo(Card *pCard, int* pIndex);
 
+/**
+ *æŸ¥è¯¢å……å€¼ä¿¡æ¯
+ *param:  Card* pCard, int* pIndex
+ *return  Money* : æŸ¥è¯¢ç»“æœé¦–åœ°å€
+ */
 Money* queryMoneyInfo(Card *pCard, int *pIndex);
 
 #endif // !__SERVICE__H__

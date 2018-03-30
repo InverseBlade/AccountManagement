@@ -36,9 +36,9 @@ Billing* queryBillings(const char* pName, int* pIndex) {
 			sum++;
 		p = p->next;
 	}
-
 	if (NULL == (billingSR = (Billing*)calloc(sum, sizeof(Billing))))
 		return NULL;
+
 	p = billingList->next;
 	while (NULL != p) {
 		if (0 == strcmp(pName, p->data.aCardName)) {
@@ -116,6 +116,6 @@ int getBilling() {
 		tail = p;
 	}
 	total_count = nCount;
-
+	free(bill);
 	return TRUE;
 }

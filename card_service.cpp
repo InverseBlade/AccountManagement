@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 #include "card_service.h"
 #include "card_file.h"
@@ -61,17 +61,19 @@ static int getCard() {
 
 	releaseCardList();
 	nCount = getCardCount(_CARD_PATH_);
-	pCard = (Card*)calloc(nCount, sizeof(Card));
-	
+
+	if (NULL == (pCard = (Card*)calloc(nCount, sizeof(Card))))
+		return FALSE;
 	if (nCount == 0 || FALSE == readCard(pCard, _CARD_PATH_)) {
 		free(pCard);
 		return FALSE;
 	}
+	if (FALSE == initCardList())
+		return FALSE;
 
-	initCardList();
 	p = cardlist;
 	for (index = 0; index < nCount; index++) {
-		/**********½«¹ýÆÚ¿¨±ê×¢ÎªÊ§Ð§*************/
+		/**********å°†è¿‡æœŸå¡æ ‡æ³¨ä¸ºå¤±æ•ˆ*************/
 		if (3 != pCard[index].nStatus && time(NULL) >= pCard[index].tEnd) {
 			pCard[index].nStatus = 3;
 			updateCard(&pCard[index], _CARD_PATH_, index);

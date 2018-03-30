@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 #include "menu.h"
 #include "service.h"
@@ -8,20 +8,20 @@
 
 void outputMenu() {
 	char str[] = {
-		"»¶Ó­½øÈë¼Æ·Ñ¹ÜÀíÏµÍ³\n"
-		"----------²Ëµ¥----------\n"
-		"1.Ìí¼Ó¿¨\n"
-		"2.²éÑ¯¿¨\n"
-		"3.ÉÏ»ú\n"
-		"4.ÏÂ»ú\n"
-		"5.³äÖµ\n"
-		"6.ÍË·Ñ\n"
-		"7.²éÑ¯Í³¼Æ\n"
-		"8.×¢Ïú¿¨\n"
-		"9.ÇåÆÁ\n"
-		"0.ÍË³ö\n"
+		"æ¬¢è¿è¿›å…¥è®¡è´¹ç®¡ç†ç³»ç»Ÿ\n"
+		"----------èœå•----------\n"
+		"1.æ·»åŠ å¡\n"
+		"2.æŸ¥è¯¢å¡\n"
+		"3.ä¸Šæœº\n"
+		"4.ä¸‹æœº\n"
+		"5.å……å€¼\n"
+		"6.é€€è´¹\n"
+		"7.æŸ¥è¯¢ç»Ÿè®¡\n"
+		"8.æ³¨é”€å¡\n"
+		"9.æ¸…å±\n"
+		"0.é€€å‡º\n"
 		"\n"
-		"ÇëÑ¡Ôñ²Ëµ¥Ïî±àºÅ£º"
+		"è¯·é€‰æ‹©èœå•é¡¹ç¼–å·ï¼š"
 	};
 	//system("cls");
 	printf(str);
@@ -64,7 +64,7 @@ int controller(int request) {
 		status = _EXIT_;
 		break;
 	default:
-		printf("ÊäÈëµÄ²Ëµ¥±àºÅÓĞÎó£¬ÇëÖØĞÂÊäÈë£¡\n");
+		printf("è¾“å…¥çš„èœå•ç¼–å·æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ï¼\n");
 		break;
 	}
 	printf("\n");
@@ -77,28 +77,28 @@ void add() {
 	int len, status;
 	float money;
 
-	printf("----------Ìí¼Ó¿¨----------\n");
+	printf("----------æ·»åŠ å¡----------\n");
 	fflush(stdin);
 	
-	printf("ÇëÊäÈë¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("è¯·è¾“å…¥å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
 	len = strlen(cardno);
 	if (1 <= len && len <= 18) {
-		printf("ÇëÊäÈëÃÜÂë(³¤¶ÈÎª1~8)£º");
+		printf("è¯·è¾“å…¥å¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 		scanf("%10s", passwd);
 		len = strlen(passwd);
 		if (1 <= len && len <= 8) {
-			printf("ÇëÊäÈë¿ª¿¨½ğ¶î(RMB)£º");
+			printf("è¯·è¾“å…¥å¼€å¡é‡‘é¢(RMB)ï¼š");
 			scanf("%f", &money);
 			if (0 <= money && TRUE == addCardInfo(cardno, passwd, money)) {
-				printf("\n----------¿ª¿¨³É¹¦----------\n");
-				printf("¿¨ºÅ\tÃÜÂë\t×´Ì¬\t¿ª¿¨½ğ¶î\n");
+				printf("\n----------å¼€å¡æˆåŠŸ----------\n");
+				printf("å¡å·\tå¯†ç \tçŠ¶æ€\tå¼€å¡é‡‘é¢\n");
 				printf("%s\t%s\t%d\t%.1f\n", cardno, passwd, 0, money);
 				return;
 			}
 		}
 	}
-	printf("ÊäÈëÓĞÎó,¿ª¿¨Ê§°Ü£¡\n");
+	printf("è¾“å…¥æœ‰è¯¯,å¼€å¡å¤±è´¥ï¼\n");
 	fflush(stdin);
 	return;
 }
@@ -108,36 +108,36 @@ void query() {
 	Card* card = NULL;
 	int i, total = 0, opt;
 
-	printf("----------²éÑ¯¿¨----------\n");
-	printf("ÇëÑ¡Ôñ£º1.¾«×¼²éÑ¯  2.Ä£ºı²éÑ¯\nÊäÈëÊı×ÖÑ¡Ïî£º");
+	printf("----------æŸ¥è¯¢å¡----------\n");
+	printf("è¯·é€‰æ‹©ï¼š1.ç²¾å‡†æŸ¥è¯¢  2.æ¨¡ç³ŠæŸ¥è¯¢\nè¾“å…¥æ•°å­—é€‰é¡¹ï¼š");
 	scanf("%d", &opt);
 	if (opt != 1 && opt != 2) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
-	printf("ÇëÊäÈë²éÑ¯µÄ¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("è¯·è¾“å…¥æŸ¥è¯¢çš„å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
 
 	if (18 <= strlen(cardno)) {
-		printf("ÊäÈëÓĞÎó,²éÑ¯Ê§°Ü£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯,æŸ¥è¯¢å¤±è´¥ï¼\n");
 		return;
 	}
 	if (opt == 1) {
 		if (NULL == (card = queryCardInfo(cardno, 1, NULL))) {
-			printf("Ã»ÓĞ¸Ã¿¨µÄĞÅÏ¢£¡\n");
+			printf("æ²¡æœ‰è¯¥å¡çš„ä¿¡æ¯ï¼\n");
 			return;
 		}
 		timeToString(card->tLast, tLast);
-		printf("¿¨ºÅ\t×´Ì¬\tÓà¶î\tÀÛ¼ÆÊ¹ÓÃ\tÊ¹ÓÃ´ÎÊı\tÉÏ´ÎÊ¹ÓÃÊ±¼ä\n");
+		printf("å¡å·\tçŠ¶æ€\tä½™é¢\tç´¯è®¡ä½¿ç”¨\tä½¿ç”¨æ¬¡æ•°\tä¸Šæ¬¡ä½¿ç”¨æ—¶é—´\n");
 		printf("%s\t%d\t%.1f\t%.1f\t\t%d\t\t%s\n", card->aName, card->nStatus, card->fBalance, card->fTotalUse, card->nUseCount, tLast);
 	}
 	else if (opt == 2) {
 		card = queryCardInfo(cardno, 2, &total);
 		if (card == NULL || total == 0) {
-			printf("Ã»ÓĞ¸Ã¿¨µÄĞÅÏ¢£¡\n");
+			printf("æ²¡æœ‰è¯¥å¡çš„ä¿¡æ¯ï¼\n");
 			return;
 		}
-		printf("¿¨ºÅ\t×´Ì¬\tÓà¶î\tÀÛ¼ÆÊ¹ÓÃ\tÊ¹ÓÃ´ÎÊı\tÉÏ´ÎÊ¹ÓÃÊ±¼ä\n");
+		printf("å¡å·\tçŠ¶æ€\tä½™é¢\tç´¯è®¡ä½¿ç”¨\tä½¿ç”¨æ¬¡æ•°\tä¸Šæ¬¡ä½¿ç”¨æ—¶é—´\n");
 		for (i = 0; i < total; i++, card++) {
 			timeToString(card->tLast, tLast);
 			printf("%s\t%d\t%.1f\t%.1f\t\t%d\t\t%s\n", card->aName, card->nStatus, card->fBalance, card->fTotalUse, card->nUseCount, tLast);
@@ -158,14 +158,14 @@ void logon() {
 	LogonInfo logonInfo;
 	int status;
 
-	printf("----------ÉÏ»ú----------\n");
-	printf("ÇëÊäÈëÉÏ»ú¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("----------ä¸Šæœº----------\n");
+	printf("è¯·è¾“å…¥ä¸Šæœºå¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	printf("ÇëÊäÈëÉÏ»úÃÜÂë(³¤¶ÈÎª1~8)£º");
+	printf("è¯·è¾“å…¥ä¸Šæœºå¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	scanf("%10s", passwd);
 
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	status = doLogon(cardno, passwd, &logonInfo);
@@ -173,19 +173,19 @@ void logon() {
 	switch (status)
 	{
 	case FALSE:
-		printf("ÉÏ»úÊ§°Ü£¡\n");
+		printf("ä¸Šæœºå¤±è´¥ï¼\n");
 		break;
 	case TRUE:
 		timeToString(logonInfo.tLogon, tLogon);
-		printf("----------ÉÏ»úĞÅÏ¢ÈçÏÂ----------\n");
-		printf("¿¨ºÅ\tÓà¶î\tÉÏ»úÊ±¼ä\n");
+		printf("----------ä¸Šæœºä¿¡æ¯å¦‚ä¸‹----------\n");
+		printf("å¡å·\tä½™é¢\tä¸Šæœºæ—¶é—´\n");
 		printf("%s\t%.1f\t%s\n", logonInfo.aCardName, logonInfo.fBalance, tLogon);
 		break;
 	case _UNUSE_:
-		printf("¸Ã¿¨ÕıÔÚÊ¹ÓÃ»òÕßÒÑ×¢Ïú£¡\n");
+		printf("è¯¥å¡æ­£åœ¨ä½¿ç”¨æˆ–è€…å·²æ³¨é”€ï¼\n");
 		break;
 	case _NOT_ENOUGH_MONEY:
-		printf("¿¨Óà¶î²»×ã£¡\n");
+		printf("å¡ä½™é¢ä¸è¶³ï¼\n");
 		break;
 	default:
 		break;
@@ -200,14 +200,14 @@ void settle() {
 	char tStart[_TIME_LENGTH_], tEnd[_TIME_LENGTH_];
 	SettleInfo settleInfo;
 
-	printf("----------ÏÂ»ú----------\n");
-	printf("ÇëÊäÈëÏÂ»ú¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("----------ä¸‹æœº----------\n");
+	printf("è¯·è¾“å…¥ä¸‹æœºå¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	printf("ÇëÊäÈëÏÂ»úÃÜÂë(³¤¶ÈÎª1~8)£º");
+	printf("è¯·è¾“å…¥ä¸‹æœºå¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	scanf("%10s", passwd);
 
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	nResult = doSettle(cardno, passwd, &settleInfo);
@@ -215,16 +215,16 @@ void settle() {
 	switch (nResult)
 	{
 	case _NOT_ENOUGH_MONEY:
-		printf("ÏÂ»úÊ§°Ü,¿¨Óà¶î²»×ã£¡\n");
+		printf("ä¸‹æœºå¤±è´¥,å¡ä½™é¢ä¸è¶³ï¼\n");
 		break;
 	case FALSE:
-		printf("ÏÂ»úÊ§°Ü£¡\n");
+		printf("ä¸‹æœºå¤±è´¥ï¼\n");
 		break;
 	case TRUE:
 		timeToString(settleInfo.tStart, tStart);
 		timeToString(settleInfo.tEnd, tEnd);
-		printf("----------ÏÂ»úĞÅÏ¢ÈçÏÂ----------\n");
-		printf("¿¨ºÅ\tÏû·Ñ\tÓà¶î\tÉÏ»úÊ±¼ä\t\tÏÂ»úÊ±¼ä\n");
+		printf("----------ä¸‹æœºä¿¡æ¯å¦‚ä¸‹----------\n");
+		printf("å¡å·\tæ¶ˆè´¹\tä½™é¢\tä¸Šæœºæ—¶é—´\t\tä¸‹æœºæ—¶é—´\n");
 		printf("%s\t%.1f\t%.1f\t%s\t%s\n", settleInfo.aCardName, settleInfo.fAmount, settleInfo.fBalance, tStart, tEnd);
 		break;
 	default:
@@ -237,29 +237,29 @@ void annul() {
 	char cardno[25], passwd[15];
 	int nResult = 0;
 
-	printf("----------×¢Ïú¿¨----------\n");
-	printf("ÇëÊäÈë×¢Ïú¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("----------æ³¨é”€å¡----------\n");
+	printf("è¯·è¾“å…¥æ³¨é”€å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	printf("ÇëÊäÈëÃÜÂë(³¤¶ÈÎª1~8)£º");
+	printf("è¯·è¾“å…¥å¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	scanf("%10s", passwd);
 
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	strcpy(card.aName, cardno);
 	strcpy(card.aPwd, passwd);
 
 	nResult = annulCard(&card);
-	printf("----------×¢ÏúĞÅÏ¢ÈçÏÂ----------\n");
+	printf("----------æ³¨é”€ä¿¡æ¯å¦‚ä¸‹----------\n");
 	switch (nResult)
 	{
 	case TRUE:
-		printf("¿¨ºÅ\tÍË¿î½ğ¶î\n");
+		printf("å¡å·\té€€æ¬¾é‡‘é¢\n");
 		printf("%s\t%.1f\n", card.aName, card.fBalance);
 		break;
 	case FALSE:
-		printf("×¢Ïú¿¨Ê§°Ü£¡\n");
+		printf("æ³¨é”€å¡å¤±è´¥ï¼\n");
 		break;
 	default:
 		break;
@@ -272,28 +272,28 @@ void addMoney() {
 	char cardno[25], passwd[15];
 	float fMoney = 0;
 
-	printf("----------³äÖµ----------\n");
-	printf("ÇëÊäÈë³äÖµ¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("----------å……å€¼----------\n");
+	printf("è¯·è¾“å…¥å……å€¼å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	printf("ÇëÊäÈë³äÖµÃÜÂë(³¤¶ÈÎª1~8)£º");
+	printf("è¯·è¾“å…¥å……å€¼å¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	scanf("%10s", passwd);
-	printf("ÇëÊäÈë³äÖµ½ğ¶î(RMB)£º");
+	printf("è¯·è¾“å…¥å……å€¼é‡‘é¢(RMB)ï¼š");
 	scanf("%f", &fMoney);
 
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	moneyInfo.fMoney = fMoney;
 
 	if (TRUE == doAddMoney(cardno, passwd, &moneyInfo)) {
-		printf("----------³äÖµĞÅÏ¢ÈçÏÂ----------\n");
-		printf("¿¨ºÅ\t³äÖµ½ğ¶î\tÓà¶î\n");
+		printf("----------å……å€¼ä¿¡æ¯å¦‚ä¸‹----------\n");
+		printf("å¡å·\tå……å€¼é‡‘é¢\tä½™é¢\n");
 		printf("%s\t%.1f\t\t%.1f\n", moneyInfo.aCardName, moneyInfo.fMoney, moneyInfo.fBalance);
 		return;
 	}
 
-	printf("³äÖµÊ§°Ü£¡\n");
+	printf("å……å€¼å¤±è´¥ï¼\n");
 }
 
 void refundMoney() {
@@ -302,32 +302,32 @@ void refundMoney() {
 	float fMoney = 0;
 	int nResult = 0;
 
-	printf("----------ÍË·Ñ----------\n");
-	printf("ÇëÊäÈëÍË·Ñ¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("----------é€€è´¹----------\n");
+	printf("è¯·è¾“å…¥é€€è´¹å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	printf("ÇëÊäÈëÍË·ÑÃÜÂë(³¤¶ÈÎª1~8)£º");
+	printf("è¯·è¾“å…¥é€€è´¹å¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	scanf("%10s", passwd);
 
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18 && 1 <= strlen(passwd) && strlen(passwd) <= 8)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	nResult = doRefundMoney(cardno, passwd, &moneyInfo);
 
 	switch (nResult) {
 	case TRUE:
-		printf("----------ÍË·ÑĞÅÏ¢ÈçÏÂ----------\n");
-		printf("¿¨ºÅ\tÍË·Ñ½ğ¶î\tÓà¶î\n");
+		printf("----------é€€è´¹ä¿¡æ¯å¦‚ä¸‹----------\n");
+		printf("å¡å·\té€€è´¹é‡‘é¢\tä½™é¢\n");
 		printf("%s\t%.1f\t\t%.1f\n", moneyInfo.aCardName, moneyInfo.fMoney, moneyInfo.fBalance);
 		break;
 	case _NOT_ENOUGH_MONEY:
-		printf("¿¨Óà¶î²»×ã£¡\n");
+		printf("å¡ä½™é¢ä¸è¶³ï¼\n");
 		break;
 	case _UNUSE_:
-		printf("ÍË·ÑÊ§°Ü£¡\n");
+		printf("é€€è´¹å¤±è´¥ï¼\n");
 		break;
 	default:
-		printf("ÍË·ÑÊ§°Ü£¡\n");
+		printf("é€€è´¹å¤±è´¥ï¼\n");
 		break;
 	}
 	return;
@@ -341,43 +341,43 @@ void statistic() {
 	Money *moneyRS = NULL;
 	Card card;
 
-	printf("----------Í³¼Æ²éÑ¯----------\n");
-	printf("1.²éÑ¯Ïû·Ñ¼ÇÂ¼\t2.²éÑ¯³äÖµ¼ÇÂ¼\n");
-	printf("ÇëÊäÈëÑ¡Ïî£º");
+	printf("----------ç»Ÿè®¡æŸ¥è¯¢----------\n");
+	printf("1.æŸ¥è¯¢æ¶ˆè´¹è®°å½•\t2.æŸ¥è¯¢å……å€¼è®°å½•\n");
+	printf("è¯·è¾“å…¥é€‰é¡¹ï¼š");
 	scanf("%d", &opt);
-	printf("ÇëÊäÈë²éÑ¯¿¨ºÅ(³¤¶ÈÎª1~18)£º");
+	printf("è¯·è¾“å…¥æŸ¥è¯¢å¡å·(é•¿åº¦ä¸º1~18)ï¼š");
 	scanf("%20s", cardno);
-	//printf("ÇëÊäÈëÃÜÂë(³¤¶ÈÎª1~8)£º");
+	//printf("è¯·è¾“å…¥å¯†ç (é•¿åº¦ä¸º1~8)ï¼š");
 	//scanf("%10s", passwd);
 	if (!(1 <= strlen(cardno) && strlen(cardno) <= 18)) {
-		printf("ÊäÈëÓĞÎó£¡\n");
+		printf("è¾“å…¥æœ‰è¯¯ï¼\n");
 		return;
 	}
 	strcpy(card.aName, cardno);
 
 	if (1 == opt) {
 		if (NULL == (rs = queryBillingInfo(&card, &total))) {
-			printf("²éÑ¯Ê§°Ü£¡\n");
+			printf("æŸ¥è¯¢å¤±è´¥ï¼\n");
 			return;
 		}
-		printf("¿¨ºÅ\tÏû·Ñ½ğ¶î\t×´Ì¬\tÉÏ»úÊ±¼ä\t\tÏÂ»úÊ±¼ä\n");
+		printf("å¡å·\tæ¶ˆè´¹é‡‘é¢\tçŠ¶æ€\tä¸Šæœºæ—¶é—´\t\tä¸‹æœºæ—¶é—´\n");
 		for (index = 0; index < total; index++, rs++) {
 			timeToString(rs->tStart, tStart);
 			timeToString(rs->tEnd, tEnd);
 			printf("%s\t%.1f\t\t%s\t%s\t%s\n", 
-				rs->aCardName, rs->fAmount, rs->nStatus? "ÒÑ½áËã":"Î´½áËã", tStart, tEnd);
+				rs->aCardName, rs->fAmount, rs->nStatus? "å·²ç»“ç®—":"æœªç»“ç®—", tStart, tEnd);
 		}
 	}
 	else if (2 == opt) {
 		if (NULL == (moneyRS = queryMoneyInfo(&card, &total))) {
-			printf("²éÑ¯Ê§°Ü£¡\n");
+			printf("æŸ¥è¯¢å¤±è´¥ï¼\n");
 			return;
 		}
-		printf("¿¨ºÅ\t\tÊ±¼ä\t\t×´Ì¬\t½ğ¶î\tÉ¾³ı±êÊ¶\n\n");
+		printf("å¡å·\t\tæ—¶é—´\t\tçŠ¶æ€\té‡‘é¢\tåˆ é™¤æ ‡è¯†\n\n");
 		for (index = 0; index < total; index++, moneyRS++) {
 			timeToString(moneyRS->tTime, tStart);
 			printf("%s\t%s\t%s\t%.1f\t%d\n",
-				moneyRS->aCardName, tStart, moneyRS->nStatus ? "ÍË·Ñ" : "³äÖµ", moneyRS->fMoney, moneyRS->nDel);
+				moneyRS->aCardName, tStart, moneyRS->nStatus ? "é€€è´¹" : "å……å€¼", moneyRS->fMoney, moneyRS->nDel);
 		}
 	}
 }
