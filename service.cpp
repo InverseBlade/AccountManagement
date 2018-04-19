@@ -110,21 +110,21 @@ int doSettle(const char* pName, const char* pPwd, SettleInfo* pInfo) {
 
 	pBilling->fAmount = dbAmount;
 	pBilling->nStatus = 1;
-	pBilling->tEnd = time(NULL);
+	pBilling->tEnd = pCard->tLast;
 	if (FALSE == updateBilling(pBilling, _BILLING_PATH_, billingIndex))
 		return FALSE;
 
 	strcpy(pInfo->aCardName, pName);
 	pInfo->fAmount = dbAmount;
 	pInfo->fBalance = fBalance;
-	pInfo->tEnd = time(NULL);
+	pInfo->tEnd = pCard->tLast;
 	pInfo->tStart = pBilling->tStart;
 
 	return TRUE;
 }
 
-Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
-	Card *pCard = NULL;
+const Card* queryCardInfo(const char* pName, int mode, int* pIndex) {
+	const Card *pCard = NULL;
 	int total = 0;
 
 	if (mode == 1 || pIndex == NULL) {

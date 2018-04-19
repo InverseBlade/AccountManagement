@@ -113,7 +113,7 @@ Card* queryCard(const char* cardno) {
 	}
 }
 
-Card* queryCards(const char* pName, int* pIndex) {
+const Card* queryCards(const char* pName, int* pIndex) {
 	lpCardNode p;
 	int n = 0, sum = 0;
 

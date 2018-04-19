@@ -21,7 +21,7 @@ int addCardInfo(const char* cardno, const char* passwd, float money);
  *param: mode: 1:精准查询 2.模糊查询   pIndex: NULL:精准查询
  *return: Card* 
  */
-Card* queryCardInfo(const char* pName, int mode, int* pIndex);
+const Card* queryCardInfo(const char* pName, int mode, int* pIndex);
 
 /**
  *释放卡信息链表

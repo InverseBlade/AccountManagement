@@ -1,15 +1,15 @@
-#ifndef __CARD_SERVICE__H__
+Ôªø#ifndef __CARD_SERVICE__H__
 #define __CARD_SERVICE__H__
 
 #define _CARD_TOTAL_ 50
 
 #include "model.h"
 
-int addCard(Card card);  //ÃÌº”ø®
+int addCard(Card card);  //Ê∑ªÂä†Âç°
 
-Card* queryCard(const char* cardno);								 //≤È—Øø®
+Card* queryCard(const char* cardno);								 //Êü•ËØ¢Âç°
 
-Card* queryCards(const char* pName, int* pIndex);
+const Card* queryCards(const char* pName, int* pIndex);
 
 void releaseCardList();
 

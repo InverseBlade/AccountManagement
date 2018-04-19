@@ -105,7 +105,7 @@ void add() {
 
 void query() {
 	char cardno[25], tLast[_TIME_LENGTH_];
-	Card* card = NULL;
+	const Card* card = NULL;
 	int i, total = 0, opt;
 
 	printf("----------查询卡----------\n");
